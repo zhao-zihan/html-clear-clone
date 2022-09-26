@@ -1,4 +1,8 @@
 const localStorageKey = "html-clear";
+const states = {
+  LIST_COLLECTION_VIEW: "lists",
+  TODO_COLLECTION_VIEW: "todos",
+};
 
 class Mock {
   constructor() {
@@ -111,3 +115,5 @@ class Mock {
     };
   }
 }
+
+const mock = new Mock();
