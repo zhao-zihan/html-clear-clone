@@ -1,7 +1,5 @@
 "use strict";
 
-const itemContainer = document.querySelector(".wrapper");
-
 class App {
   constructor() {
     this._init();
@@ -9,6 +7,7 @@ class App {
 
   _init() {
     this.data = mock.data;
+    console.log(this.data);
 
     const state = this.data.state;
     const lists = this.data.items;
@@ -17,7 +16,7 @@ class App {
     switch (state.view) {
       case states.LIST_COLLECTION_VIEW:
         console.log("init at list collection");
-        this.currentCollection = new ListCollection();
+        this.currentCollection = new ListCollection(this.data);
         break;
 
       case states.TODO_COLLECTION_VIEW:
@@ -36,7 +35,13 @@ class App {
         break;
     }
 
-    this.currentCollection.load(0, true);
+    console.log(this.currentCollection);
+
+    // this.currentCollection._load(0, true);
+
+    if (!this.currentCollection.initiated) {
+      this.currentCollection._load();
+    }
   }
 }
 
