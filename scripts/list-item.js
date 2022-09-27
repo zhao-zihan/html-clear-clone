@@ -21,6 +21,7 @@ class ListItem extends Item {
 
   constructor(data) {
     super(data);
+
     this.h = listItemVars.baseH;
     this.s = listItemVars.baseS;
     this.l = listItemVars.baseL;
@@ -31,12 +32,18 @@ class ListItem extends Item {
     if (!data.items) data.items = [];
 
     data.items.forEach((item) => {
-      if (!item.done) count++;
+      if (!item.done) this.count++;
     });
+
+    this._render();
+
+    this.style = this.el.style;
+    this.slider = this.el.querySelector(".slider");
+    this.sliderStyle = this.slider.style;
   }
 
   _render() {
-    this.el = `
+    this.el = htmlToElements(`
       <div class="item list-item ${this.count ? "" : "empty"}">
           <div class="slider">
               <div class="inner">
@@ -48,9 +55,8 @@ class ListItem extends Item {
               </div>
           </div>
       </div>
-    `;
-    this.htmlEl.push(this.el);
-    this.countEl = document.querySelector(".count");
+    `);
+    console.log("successfully rendered " + this.el.innerHTML);
   }
 
   _updateColor() {
