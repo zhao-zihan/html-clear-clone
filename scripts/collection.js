@@ -1,22 +1,26 @@
 "use strict";
 
 class Collection {
-  constructor() {
-    this._init();
-    this._render();
-    this._populateItems();
+  constructor(data) {
+    console.log("data in collection constructor" + data);
+    this._init(data);
+    // this._render();
+    // this._populateItems();
   }
 
   _init(data) {
     this.initiated = false;
 
     this.data = data || mock.data;
+    console.log("init in collection " + this.data);
     this.items = [];
   }
 
   _populateItems() {
+    console.log("populate in collection " + this.data.items);
     const items = this.data.items;
-    const i = items.length;
+    let i = items.length;
+    console.log("there are " + i + " i");
 
     this.count = 0;
     this.hash = {};
@@ -24,6 +28,7 @@ class Collection {
 
     while (i--) {
       this._addItem(items[i]);
+      console.log("items[i] is " + items[i]);
     }
 
     this.hasDoneItems = this.items.length > this.count;
@@ -31,12 +36,14 @@ class Collection {
 
   _addItem(data) {
     const newItem = this.itemType(data);
+    console.log("newItem: " + JSON.stringify(newItem));
 
     newItem.collection = this;
-    newItem.updatePosition();
+    // newItem.updatePosition();
 
     newItem.el.dataset.id = this.newIdFrom;
-    newItem.htmlEl.push(newItem.el);
+    // this.el.insertAdjacentHTML("afterend", newItem);
+    // console.log("current el: " + this.el.innerHTML);
 
     this.items.push(newItem);
     this.hash[this.newIdFrom] = newItem;
