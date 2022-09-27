@@ -1,7 +1,17 @@
 const localStorageKey = "html-clear";
+
 const states = {
   LIST_COLLECTION_VIEW: "lists",
   TODO_COLLECTION_VIEW: "todos",
+};
+
+const itemContainer = document.querySelector(".wrapper");
+
+// https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
+const htmlToElements = function (html) {
+  var div = document.createElement("div");
+  div.innerHTML = html;
+  return div.firstElementChild;
 };
 
 class Mock {
