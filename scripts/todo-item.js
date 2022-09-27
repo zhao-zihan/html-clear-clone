@@ -25,7 +25,7 @@ class TodoItem extends Item {
   }
 
   _render() {
-    this.el = `
+    this.el = htmlToElements(`
       <div class="item todo-item ${
         this.data.done ? "done" : ""
       }" style="z-index: ${this.data.order}">
@@ -39,9 +39,7 @@ class TodoItem extends Item {
               </div>
           </div>
       </div>
-    `;
-    this.htmlEl.push(this.el);
-    this.lineStyle = this.htmlEl.querySelectorAll(".line")[0].style;
+    `);
     if (this.data.done) this.lineStyle.width = "100%";
   }
 
