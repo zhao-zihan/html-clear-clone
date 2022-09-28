@@ -25,6 +25,7 @@ body {
 
 .item {
   height: var(--item-height);
+  position: relative;
 }
 
 .slider {
@@ -62,4 +63,22 @@ body {
   font-weight: bold;
   color: #fff;
   height: var(--item-height);
+}
+
+.check,
+.cross {
+  width: var(--item-height);
+  height: var(--item-height);
+  position: absolute;
+  z-index: 0;
+  opacity: 0;
+  top: 0;
+}
+
+.check {
+  left: 0;
+}
+
+.cross {
+  right: 0;
 }
