@@ -14,6 +14,18 @@ const htmlToElements = function (html) {
   return div.firstElementChild;
 };
 
+const elementsToHTML = function (element) {
+  let outer = document.createElement("div");
+  outer.appendChild(element);
+  return outer.innerHTML;
+};
+
+const retrieveChild = function (element) {
+  let div = document.createElement("div");
+  div.appendChild(element);
+  return div.firstElementChild;
+};
+
 class Mock {
   constructor() {
     this._init();
