@@ -33,6 +33,7 @@ class ListCollection extends Collection {
 
   _load() {
     this.initiated = true;
-    itemContainer.insertAdjacentHTML("afterend", this.el.innerHTML);
+    // itemContainer.insertAdjacentHTML("afterend", this.el.innerHTML);
+    itemContainer.innerHTML = this.el.innerHTML;
   }
 }
