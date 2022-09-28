@@ -20,26 +20,13 @@ class ListItem extends Item {
   type = "list-item";
 
   constructor(data) {
-    super(data);
+    super(data, true);
+    console.log("check count: " + this.count);
 
     this.h = listItemVars.baseH;
     this.s = listItemVars.baseS;
     this.l = listItemVars.baseL;
     this.toDoCollection = null;
-
-    this.count = 0;
-
-    if (!data.items) data.items = [];
-
-    data.items.forEach((item) => {
-      if (!item.done) this.count++;
-    });
-
-    this._render();
-
-    this.style = this.el.style;
-    this.slider = this.el.querySelector(".slider");
-    this.sliderStyle = this.slider.style;
   }
 
   _render() {
@@ -56,12 +43,14 @@ class ListItem extends Item {
           </div>
       </div>
     `);
-    console.log("successfully rendered " + this.el.innerHTML);
+    console.log("successfully rendered\n " + elementsToHTML(this.el));
   }
 
   _updateColor() {
+    console.log("list item color updated");
     const o = this.data.order;
     const n = this.collection.count;
+    console.log("check o: " + o + " check n: " + n);
     let sH = listItemVars.stepH;
     let sS = listItemVars.stepS;
     let sL = listItemVars.stepL;
@@ -77,5 +66,7 @@ class ListItem extends Item {
         ${Math.min(100, listItemVars.baseS + o * sS)}%, 
         ${Math.min(100, listItemVars.baseL + o * sL)}%)
     `;
+
+    console.log("check sliderStyle: " + this.slider.innerHTML);
   }
 }
