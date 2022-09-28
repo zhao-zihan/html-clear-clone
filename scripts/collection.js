@@ -49,7 +49,7 @@ class Collection {
     retrieveChild(newItem.el).dataset.id = this.newIdFrom;
     // console.log("check new method: " + elementsToHTML(newItem.el));
     // console.log("el of new item: " + newItem.el.innerHTML);
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/prepend
     console.log("current el: \n" + elementsToHTML(newItem.el));
     this.el.prepend(newItem.el);
 
