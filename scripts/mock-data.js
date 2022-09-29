@@ -1,31 +1,3 @@
-const localStorageKey = "html-clear";
-
-const states = {
-  LIST_COLLECTION_VIEW: "lists",
-  TODO_COLLECTION_VIEW: "todos",
-};
-
-const itemContainer = document.querySelector(".wrapper");
-
-// https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-const htmlToElements = function (html) {
-  var div = document.createElement("div");
-  div.innerHTML = html;
-  return div.firstElementChild;
-};
-
-const elementsToHTML = function (element) {
-  let outer = document.createElement("div");
-  outer.appendChild(element);
-  return outer.innerHTML;
-};
-
-const retrieveChild = function (element) {
-  let div = document.createElement("div");
-  div.appendChild(element);
-  return div.firstElementChild;
-};
-
 class Mock {
   constructor() {
     this._init();
