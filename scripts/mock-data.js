@@ -24,6 +24,19 @@ class Mock {
     localStorage.setItem(localStorageKey, raw);
   }
 
+  _deleteItem(target, list) {
+    list.items.forEach((item, i) => {
+      if (item === target) {
+        list.items.splice(i, 1);
+        return;
+      }
+    });
+  }
+
+  _addItem(item, list) {
+    list.items.push(item);
+  }
+
   _useDefaultData() {
     console.log("using default data");
 
