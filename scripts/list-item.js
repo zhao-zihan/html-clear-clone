@@ -21,7 +21,7 @@ class ListItem extends Item {
 
   constructor(data) {
     super(data, true);
-    console.log("check count: " + this.count);
+    // console.log("check count: " + this.count);
 
     this.h = listItemVars.baseH;
     this.s = listItemVars.baseS;
@@ -43,14 +43,15 @@ class ListItem extends Item {
           </div>
       </div>
     `);
-    console.log("successfully rendered\n " + elementsToHTML(this.el));
+    this.countEl = this.el.querySelector(".count");
+    // console.log("successfully rendered\n " + elementsToHTML(this.el));
   }
 
   _updateColor() {
-    console.log("list item color updated");
+    // console.log("list item color updated");
     const o = this.data.order;
     const n = this.collection.count;
-    console.log("check o: " + o + " check n: " + n);
+    // console.log("check o: " + o + " check n: " + n);
     let sH = listItemVars.stepH;
     let sS = listItemVars.stepS;
     let sL = listItemVars.stepL;
@@ -68,5 +69,73 @@ class ListItem extends Item {
     `;
 
     console.log("check sliderStyle: " + this.slider.innerHTML);
+  }
+
+  _onTap(e) {
+    if (e.target.className === "text") {
+      this._onEditStart();
+    } else {
+      this._open();
+    }
+  }
+
+  _open() {
+    if (this.collection.inMomentum) return;
+    this.el.classList.add("fade");
+
+    app.currentCollection._open(this.data.order);
+
+    if (!this.toDoCollection) {
+      this.toDoCollection = new TodoCollection(this.data, this);
+    }
+    this.toDoCollection._load(this.data.order);
+
+    app._setCurrentCollection(this.toDoCollection);
+  }
+
+  _done() {
+    if (
+      !confirm("Are you sure you want to complete all your items in this list?")
+    )
+      return;
+
+    this.data.items.forEach((item) => (item.done = true));
+
+    this.count = 0;
+    this._updateCount();
+
+    mock._save();
+  }
+
+  _del(loopWithCallback) {
+    const t = this;
+
+    if (t.count === 0) {
+      // https://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
+      super._del.apply(t);
+    } else {
+      if (loopWithCallback) {
+        loopWithCallback(ask);
+      } else {
+        if (confirm("Are you sure you want to delete the entire list?")) {
+          super._del();
+        } else {
+          t.field.display = "none";
+          t.title.display = "block";
+        }
+      }
+    }
+  }
+
+  _updateCount() {
+    console.log("I'm called");
+    this.countEl.innerText = this.count;
+    if (this.count === 0) {
+      this.el.classList.add("empty");
+      this.noDragRight = true;
+    } else {
+      this.el.classList.remove("empty");
+      this.noDragRight = false;
+    }
   }
 }
