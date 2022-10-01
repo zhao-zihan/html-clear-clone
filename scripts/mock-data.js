@@ -1,18 +1,22 @@
 class Mock {
-  constructor() {
-    this._init();
+  constructor(debug) {
+    this._init(debug);
   }
 
-  _init() {
+  _init(debug) {
     const raw = localStorage.getItem(localStorageKey);
 
-    if (raw) {
-      this.data = JSON.parse(raw);
+    if (!debug) {
+      if (raw) {
+        this.data = JSON.parse(raw);
 
-      if (!this.data) {
-        this._useDefaultData();
+        if (!this.data) {
+          this._useDefaultData();
+        } else {
+          console.log("using stored data");
+        }
       } else {
-        console.log("using stored data");
+        this._useDefaultData();
       }
     } else {
       this._useDefaultData();
@@ -43,6 +47,7 @@ class Mock {
     this.data = {
       state: {
         view: states.LIST_COLLECTION_VIEW,
+        lastTodoCollection: 0,
       },
 
       items: [
@@ -123,4 +128,4 @@ class Mock {
   }
 }
 
-const mock = new Mock();
+const mock = new Mock(debug);
