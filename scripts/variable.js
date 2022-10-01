@@ -1,3 +1,4 @@
+const debug = window.location.hash.replace("#", "") === "debug";
 const localStorageKey = "html-clear";
 
 const states = {
