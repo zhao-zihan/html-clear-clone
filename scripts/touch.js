@@ -97,6 +97,7 @@ function initEvents() {
   });
 
   itemContainer.addEventListener(move, function (e) {
+    // console.log("mouse moved");
     if (app.isEditing) return;
 
     if (!touches.length) return;
@@ -105,7 +106,7 @@ function initEvents() {
 
     const i = getTouchIndex(e.identifier || "mouse");
     if (i !== -1) {
-      touches[i].update(e);
+      touches[i]._update(e);
     } else {
       return;
     }
@@ -126,6 +127,7 @@ function initEvents() {
       }
     } else {
       actions[currentAction].move(i);
+      // console.log("current action: " + currentAction);
     }
   });
 
@@ -174,6 +176,7 @@ const actions = {
     },
 
     move() {
+      console.log("collection dragged");
       app.currentCollection._onDragMove(touches[0].dy);
     },
 
@@ -263,33 +266,33 @@ const actions = {
     },
   },
 
-  pinchOut: {
-    at: null,
+  // pinchOut: {
+  //   at: null,
 
-    check() {
-      if (pinchData.delta > dragThreshold) {
-        currentAction = "pinchOut";
-        app.currentCollection._onPinchOutStart();
-      }
-    },
+  //   check() {
+  //     if (pinchData.delta > dragThreshold) {
+  //       currentAction = "pinchOut";
+  //       app.currentCollection._onPinchOutStart();
+  //     }
+  //   },
 
-    move(i) {
-      if (touches.length === 1) return;
+  //   move(i) {
+  //     if (touches.length === 1) return;
 
-      const touch = touches[i];
-      app.currentCollection._onPinchOutMove(i, touch);
-    },
+  //     const touch = touches[i];
+  //     app.currentCollection._onPinchOutMove(i, touch);
+  //   },
 
-    end() {
-      if (touches.length === 1) return;
+  //   end() {
+  //     if (touches.length === 1) return;
 
-      if (pinchData.delta > ITEM_HEIGHT) {
-        app.currentCollection._onPinchOutEnd();
-      } else {
-        app.currentCollection._onPinchOutCancel();
-      }
-    },
-  },
+  //     if (pinchData.delta > ITEM_HEIGHT) {
+  //       app.currentCollection._onPinchOutEnd();
+  //     } else {
+  //       app.currentCollection._onPinchOutCancel();
+  //     }
+  //   },
+  // },
 
   itemTap: {
     trigger(e) {
@@ -305,12 +308,13 @@ const actions = {
 };
 
 function getTouchIndex(id) {
+  let i = -1;
   touches.forEach((item, index) => {
     if (item.id === id) {
-      return index;
+      i = index;
     }
   });
-  return -1;
+  return i;
 }
 
 function getParentItem(node) {
