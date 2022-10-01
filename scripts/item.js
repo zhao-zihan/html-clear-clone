@@ -8,6 +8,8 @@ const lowerSortMoveThreshold = ITEM_HEIGHT * 2.5;
 
 class Item {
   constructor(data, listItem) {
+    this.x = 0;
+    this.y = data.order * ITEM_HEIGHT;
     this.data = data;
     // this._render();
     if (listItem) {
