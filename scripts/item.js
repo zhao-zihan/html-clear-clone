@@ -59,7 +59,15 @@ class Item {
   _listenField() {
     this.title = this.el.querySelector(".title");
     this.field = this.el.querySelector(".field");
-    // this.field.addEventListener("blur", this._onEditEnd.bind(this));
+    const t = this;
+    this.field.addEventListener("blur", function () {
+      t._onEditDone();
+    });
+    this.field.addEventListener("keyup", function (e) {
+      if (e.keyCode === 13) {
+        this.blur();
+      }
+    });
   }
 
   _updateListCount() {
@@ -168,7 +176,7 @@ class Item {
     let doneCallback = null;
 
     if (item.x < leftBound) {
-      this.del(loopWithCallback);
+      this._delete(loopWithCallback);
       return;
     } else if (item.x > rightBound) {
       doneCallback = function () {
@@ -205,6 +213,7 @@ class Item {
     }px, ${this.y}px, 0)`;
 
     t._onTransitionEnd(function (t) {
+      console.log("on transitionEnd triggered");
       t.deleted = true;
       t.el.remove();
       t.collection._collapseAt(t.data.order, t);
@@ -279,8 +288,10 @@ class Item {
   _onEditStart(noRemember) {
     app.isEditing = true;
 
-    this.title.display = "none";
-    this.field.display = "block";
+    console.log("check this.title " + elementsToHTML(this.title));
+
+    this.title.style.display = "none";
+    this.field.style.display = "block";
     this.field.focus();
     this.el.classList.add("edit");
 
@@ -299,8 +310,8 @@ class Item {
       if (!val) {
         t._del();
       } else {
-        t.field.display = "none";
-        t.title.display = "block";
+        t.field.style.display = "none";
+        t.title.style.display = "block";
         t.querySelector(".text").innerText = val;
         t.data.title = val;
         mock._save();
@@ -314,5 +325,17 @@ class Item {
     this._onTransitionEnd(function (t) {
       t.el.remove();
     });
+  }
+
+  _ask() {
+    if (confirm("Are you sure you want to delete the entire list?")) {
+      const t = this;
+      setTimeout(function () {
+        t._del();
+      }, 20);
+    } else {
+      this.field.display = "none";
+      this.title.display = "block";
+    }
   }
 }
