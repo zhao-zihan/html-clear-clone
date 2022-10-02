@@ -19,15 +19,13 @@ class Item {
     this._render();
     this._updateCount();
     // console.log("item el: " + this.el.innerHTML);
-    console.log("check el: " + elementsToHTML(this.el));
+    // console.log("check el: " + elementsToHTML(this.el));
     this._selectStyle();
     // console.log("check first element: " + this.slider.innerHTML);
 
     this._addImage();
 
     this._listenField();
-
-    // console.log("check this.field " + elementsToHTML(this.field));
   }
 
   _selectStyle() {
@@ -60,9 +58,7 @@ class Item {
     this.title = this.el.querySelector(".title");
     this.field = this.el.querySelector(".field");
     const t = this;
-    this.field.addEventListener("blur", function () {
-      t._onEditDone();
-    });
+    this.field.addEventListener("blur", this._onEditDone.bind(this));
     this.field.addEventListener("keyup", function (e) {
       if (e.keyCode === 13) {
         this.blur();
@@ -277,10 +273,12 @@ class Item {
   }
 
   _onTransitionEnd(callback, noStrict) {
+    console.log("transitionEnd triggered");
     const t = this;
-    t.el.addEventListener(transitionEndEvent, function (e) {
+    t.el.addEventListener(transitionEndEvent, function dummy(e) {
       if (e.target !== this && !noStrict) return;
-      t.el.removeEventListener(transitionEndEvent);
+      // https://stackoverflow.com/questions/4402287/javascript-remove-event-listener
+      t.el.removeEventListener(transitionEndEvent, dummy);
       callback(t);
     });
   }
@@ -288,35 +286,36 @@ class Item {
   _onEditStart(noRemember) {
     app.isEditing = true;
 
-    console.log("check this.title " + elementsToHTML(this.title));
-
     this.title.style.display = "none";
     this.field.style.display = "block";
     this.field.focus();
     this.el.classList.add("edit");
+    // console.log("onEdit el: " + elementsToHTML(this.el));
+    console.log("data order " + this.data.order);
 
     this.collection._onEditStart(this.data.order, noRemember);
   }
 
   _onEditDone() {
-    const t = this;
-    const val = t.field.value;
+    const val = this.field.value;
+    console.log("val: " + val);
 
-    t.collection._onEditDone(function () {
-      app.isEditing = false;
-
-      t.el.classList.remove("edit");
-
-      if (!val) {
-        t._del();
-      } else {
-        t.field.style.display = "none";
-        t.title.style.display = "block";
-        t.querySelector(".text").innerText = val;
-        t.data.title = val;
-        mock._save();
-      }
-    });
+    if (!isTouch) {
+      console.log("moved " + beforeEditPosition);
+      this.collection._moveY(beforeEditPosition);
+    }
+    this.collection.el.classList.remove("shade");
+    app.isEditing = false;
+    this.el.classList.remove("edit");
+    if (!val) {
+      this._del();
+    } else {
+      this.title.style.display = "block";
+      this.field.style.display = "none";
+      this.el.querySelector(".text").innerText = val;
+      this.data.title = val;
+      mock._save();
+    }
   }
 
   _clear() {
