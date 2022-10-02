@@ -10,9 +10,13 @@ const todoItemVars = {
 
   maxColorSpan: 7,
 
-  spanH: this.stepH * this.maxColorSpan,
-  spanL: this.stepL * this.maxColorSpan,
+  // spanH: this.stepH * this.maxColorSpan,
+  // spanL: this.stepL * this.maxColorSpan,
 };
+
+// https://stackoverflow.com/questions/4616202/self-references-in-object-literals-initializers
+todoItemVars.spanH = todoItemVars.stepH * todoItemVars.maxColorSpan;
+todoItemVars.spanL = todoItemVars.stepL * todoItemVars.maxColorSpan;
 
 class TodoItem extends Item {
   type = "todo-item";
