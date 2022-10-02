@@ -21,7 +21,6 @@ class Item {
     // console.log("item el: " + this.el.innerHTML);
     // console.log("check el: " + elementsToHTML(this.el));
     this._selectStyle();
-    // console.log("check first element: " + this.slider.innerHTML);
 
     this._addImage();
 
