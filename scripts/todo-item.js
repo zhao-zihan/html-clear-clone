@@ -44,6 +44,7 @@ class TodoItem extends Item {
           </div>
       </div>
     `);
+    this.lineStyle = this.el.querySelector(".line").style;
     if (this.data.done) this.lineStyle.width = "100%";
   }
 
