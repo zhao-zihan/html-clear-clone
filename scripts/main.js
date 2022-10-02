@@ -16,7 +16,7 @@ class App {
     let i = lists.length;
 
     switch (state.view) {
-      case states.LIST_COLLECTION_VIEW:
+      case states.LIST_s_VIEW:
         console.log("init at list collection");
         this.currentCollection = new ListCollection(this.data);
         break;
@@ -33,7 +33,7 @@ class App {
 
       default:
         console.log("default init at list collection");
-        this.currentCollection = new ListCollection();
+        this.currentCollection = new ListCollection(mock.data);
         break;
     }
 
@@ -41,7 +41,11 @@ class App {
 
     // this.currentCollection._load(0, true);
 
-    if (!this.currentCollection.initiated) {
+    if (this.currentCollection.itemTypeText === "Item") {
+      this.listCollection = new ListCollection(this.data);
+      this.listCollection._load();
+    } else {
+      this.listCollection = this.currentCollection;
       this.currentCollection._load();
     }
   }
