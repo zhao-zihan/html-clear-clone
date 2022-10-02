@@ -41,7 +41,7 @@ class Collection {
 
   _initDummyItems() {
     this.topDummy = this.el.querySelector(".dummy-item.top");
-    console.log("check top dummy: " + elementsToHTML(this.topDummy));
+    // console.log("check top dummy: " + elementsToHTML(this.topDummy));
     this.topDummySlider = this.topDummy.querySelector(".slider");
     this.topDummyText = this.topDummy.querySelector(".title");
     this.topDummySliderStyle = this.topDummySlider.style;
@@ -74,7 +74,7 @@ class Collection {
 
     newItem.collection = this;
     // console.log("id of new item: " + this.newIdFrom);
-    // newItem.updatePosition();
+    newItem._updatePosition();
 
     // console.log("current newItem: " + JSON.stringify(newItem.collection));
     // newItem.el.querySelector(".slider").dataset.id = this.newIdFrom;
@@ -82,7 +82,7 @@ class Collection {
     // console.log("check new method: " + elementsToHTML(newItem.el));
     // console.log("el of new item: " + newItem.el.innerHTML);
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/prepend
-    console.log("current el: \n" + elementsToHTML(newItem.el));
+    // console.log("current el: \n" + elementsToHTML(newItem.el));
     this.el.prepend(newItem.el);
 
     this.items.push(newItem);
@@ -91,8 +91,8 @@ class Collection {
 
     if (!newItem.data.done) this.count++;
 
-    if (this.updateCount) {
-      this.updateCount();
+    if (this._updateCount) {
+      this._updateCount();
     }
 
     return newItem;
@@ -142,12 +142,13 @@ class Collection {
       .forEach((item) => item._updatePosition());
   }
 
-  _moveY() {
+  _moveY(y) {
     this.y = y;
     this.style[transformProperty] = `translate3d(0px, ${y}px, 0px)`;
   }
 
   _collapseAt(at, target) {
+    console.log("collapse triggered");
     let delIndex;
 
     this.items.forEach((item, i) => {
@@ -163,7 +164,7 @@ class Collection {
     });
 
     if (delIndex || delIndex === 0) {
-      items.splice(delIndex, 1);
+      this.items.splice(delIndex, 1);
       this._updateBounds();
 
       if (!target.data.done) {
@@ -329,25 +330,25 @@ class Collection {
     beforeEditPosition = noRemember ? 0 : this.y;
 
     const t = this;
-    setTimeout(function () {
-      if (!isTouch) {
-        t._moveY(-at * ITEM_HEIGHT);
-      }
+    if (!isTouch) {
+      t._moveY(-at * ITEM_HEIGHT);
+    }
 
-      if (noRemember) {
-        t.el.classList.remove("drag");
-        t.el.classList.add("ease-out");
-        t._moveY(0);
-        t._onTransitionEnd(function () {
-          t.el.classList.remove("ease-out");
-        });
-      }
-      t.el.classList.add("shade");
-    }, 0);
+    if (noRemember) {
+      console.log("noRemember");
+      t.el.classList.remove("drag");
+      t.el.classList.add("ease-out");
+      t._moveY(0);
+      t._onTransitionEnd(function () {
+        t.el.classList.remove("ease-out");
+      });
+    }
+    t.el.classList.add("shade");
   }
 
   _onEditDone(callback) {
     if (!isTouch) {
+      console.log("moved " + beforeEditPosition);
       this._moveY(beforeEditPosition);
     }
 
@@ -400,24 +401,29 @@ class Collection {
     mock._addItem(newData, this.data);
 
     const newItem = this._addItem(newData);
+    console.log("newItem check " + newItem);
     this._updateColor();
     this._updateBounds();
 
-    newItem.el.classList.add("dummy-item bottom");
+    newItem.el.classList.add("dummy-item");
+    newItem.el.classList.add("bottom");
 
     const fieldEl = newItem.el.querySelector(".field");
-    fieldEl.display = "block";
+    fieldEl.style.display = "block";
     fieldEl.focus();
 
-    setTimeout(function () {
-      newItem.el.querySelector(".slider").style[
-        transformProperty
-      ] = `rotateX(0deg)`;
-      newItem._onTransitionEnd(function () {
-        newItem.el.classList.remove("dummy-item bottom");
-        newItem._onEditStart();
-      }, true);
-    }, 50);
+    // https://stackoverflow.com/questions/4402287/javascript-remove-event-listener
+    newItem.el.addEventListener(transitionEndEvent, function callback(e) {
+      newItem.el.classList.remove("dummy-item");
+      newItem.el.classList.remove("bottom");
+      newItem._onEditStart();
+      newItem.el.removeEventListener(transitionEndEvent, callback);
+    });
+
+    newItem.el.querySelector(".slider").style[
+      transformProperty
+    ] = `rotateX(0deg)`;
+    console.log("timeout triggered");
   }
 
   _createItemInBetween() {
@@ -470,9 +476,13 @@ class Collection {
 
   _onTransitionEnd(callback, noStrict) {
     const t = this;
-    t.el.addEventListener(transitionEndEvent, function (e) {
-      if (e.target !== this && !noStrict) return;
-      t.el.removeEventListener(transitionEndEvent);
+    t.el.addEventListener(transitionEndEvent, function dummy(e) {
+      if (e.target !== this && !noStrict) {
+        callback();
+        return;
+      }
+      // https://stackoverflow.com/questions/4402287/javascript-remove-event-listener
+      t.el.removeEventListener(transitionEndEvent, dummy);
       callback();
     });
   }
