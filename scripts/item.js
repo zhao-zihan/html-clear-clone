@@ -17,7 +17,9 @@ class Item {
     }
     console.log("check count: " + this.count);
     this._render();
-    this._updateCount();
+    if (listItem) {
+      this._updateCount();
+    }
     // console.log("item el: " + this.el.innerHTML);
     // console.log("check el: " + elementsToHTML(this.el));
     this._selectStyle();
@@ -29,7 +31,7 @@ class Item {
 
   _selectStyle() {
     this.style = this.el.style;
-    console.log("this.style: " + JSON.stringify(this.style));
+    // console.log("this.style: " + JSON.stringify(this.style));
     this.slider = this.el.querySelector(".slider");
     this.sliderStyle = this.slider.style;
   }
@@ -231,7 +233,7 @@ class Item {
       if (!c.sortMoving) c._sortMove(1, this);
     } else if (
       cy > this.collection.upperBound &&
-      ay > window.innerHeight - lowerSortMoveThreshold &&
+      ay > clientHeight - lowerSortMoveThreshold &&
       dy > -3
     ) {
       if (!c.sortMoving) c._sortMove(-1, this);
