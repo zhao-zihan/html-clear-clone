@@ -2,12 +2,14 @@
 
 class App {
   constructor() {
+    this.isEditing = false;
     this._init();
   }
 
   _init() {
+    pub.init();
+
     this.data = mock.data;
-    console.log(this.data);
 
     const state = this.data.state;
     const lists = this.data.items;
@@ -35,13 +37,22 @@ class App {
         break;
     }
 
-    console.log(this.currentCollection);
+    // console.log(this.currentCollection);
 
     // this.currentCollection._load(0, true);
 
     if (!this.currentCollection.initiated) {
       this.currentCollection._load();
     }
+  }
+
+  _setCurrentCollection(col) {
+    this.currentCollection = col;
+
+    let state = mock.data.state;
+    state.view = col.stateType;
+    state.order = col.data.order;
+    mock._save();
   }
 }
 
