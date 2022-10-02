@@ -11,10 +11,17 @@ const listItemVars = {
 
   maxColorSpan: 5,
 
-  spanH: this.maxColorSpan * this.stepH,
-  spanS: this.maxColorSpan * this.stepS,
-  spanL: this.maxColorSpan * this.stepL,
+  // spanH: maxColorSpan * stepH,
+  // spanS: maxColorSpan * stepS,
+  // spanL: maxColorSpan * stepL,
 };
+
+// https://stackoverflow.com/questions/4616202/self-references-in-object-literals-initializers
+listItemVars.spanH = listItemVars.maxColorSpan * listItemVars.stepH;
+listItemVars.spanS = listItemVars.maxColorSpan * listItemVars.stepS;
+listItemVars.spanL = listItemVars.maxColorSpan * listItemVars.stepL;
+
+console.log(`listItemVars spanH: ${listItemVars.spanH}`);
 
 class ListItem extends Item {
   type = "list-item";
@@ -22,6 +29,10 @@ class ListItem extends Item {
   constructor(data) {
     super(data, true);
     // console.log("check count: " + this.count);
+
+    if (this.count === 0) {
+      this.noDragRight = true;
+    }
 
     this.h = listItemVars.baseH;
     this.s = listItemVars.baseS;
@@ -51,15 +62,18 @@ class ListItem extends Item {
     // console.log("list item color updated");
     const o = this.data.order;
     const n = this.collection.count;
-    // console.log("check o: " + o + " check n: " + n);
+    console.log("check o: " + o + " check n: " + n);
     let sH = listItemVars.stepH;
     let sS = listItemVars.stepS;
     let sL = listItemVars.stepL;
+    console.log(`${sH}, ${sS}, ${sL}`);
 
     if (n > listItemVars.maxColorSpan) {
+      console.log("n > ?: " + n);
       sH = listItemVars.spanH / n;
       sS = listItemVars.spanS / n;
       sL = listItemVars.spanL / n;
+      console.log(`${sH}, ${sS}, ${sL}`);
     }
 
     this.sliderStyle.backgroundColor = `
@@ -107,22 +121,17 @@ class ListItem extends Item {
     mock._save();
   }
 
-  _del(loopWithCallback) {
+  _delete(loopWithCallback) {
     const t = this;
 
     if (t.count === 0) {
       // https://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
-      super._del.apply(t);
+      this._del();
     } else {
       if (loopWithCallback) {
-        loopWithCallback(ask);
+        loopWithCallback(super._ask.apply(this));
       } else {
-        if (confirm("Are you sure you want to delete the entire list?")) {
-          super._del();
-        } else {
-          t.field.display = "none";
-          t.title.display = "block";
-        }
+        super._ask();
       }
     }
   }
