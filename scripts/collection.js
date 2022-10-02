@@ -181,10 +181,7 @@ class Collection {
 
   _updateBounds(noMove) {
     this.height = this.items.length * ITEM_HEIGHT;
-    this.upperBound = Math.min(
-      0,
-      window.innerHeight - (this.height + ITEM_HEIGHT)
-    );
+    this.upperBound = Math.min(0, clientHeight - (this.height + ITEM_HEIGHT));
 
     if (this.y < this.upperBound && !noMove) {
       this._moveY(this.upperBound);
