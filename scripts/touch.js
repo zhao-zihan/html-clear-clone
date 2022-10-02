@@ -153,16 +153,16 @@ function initEvents() {
         } else {
           actions.collectionTap.trigger(e);
         }
-      } else {
-        actions[currentAction].end();
-        if (touches.length === 1) {
-          currentAction = null;
-        }
       }
-
-      touches.splice(i, 1);
-      pinchData.reset();
+    } else {
+      actions[currentAction].end();
+      if (touches.length === 1) {
+        currentAction = null;
+      }
     }
+
+    touches.splice(i, 1);
+    pinchData.reset();
   });
 }
 
