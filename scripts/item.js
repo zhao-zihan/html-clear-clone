@@ -129,7 +129,7 @@ class Item {
         // change check img opacity based on drag distance
         const o = tx / rightBound;
         this.checkO = this.data.done ? 1 - o : o;
-        this.checkStyle.opacity = this.checkO;
+        this.checkStyle.opacity = `${this.checkO}`;
 
         if (this.checkX != 0) {
           this._moveCheck(0);
@@ -143,14 +143,14 @@ class Item {
         const targetO = this.data.done ? 0 : 1;
         if (this.checkO != targetO) {
           this.checkO = targetO;
-          this.checkStyle.opacity = targetO;
+          this.checkStyle.opacity = `${targetO}`;
         }
       }
     } else if (tx < 0) {
       if (this.noDragLeft) return;
       if (tx >= leftBound) {
         this.crossO = tx / leftBound;
-        this.crossStyle.opacity = this.crossO;
+        this.crossStyle.opacity = `${this.crossO}`;
 
         if (this.crossX != 0) {
           this._moveCross(0);
@@ -161,7 +161,7 @@ class Item {
 
         if (this.crossO != 1) {
           this.crossO = 1;
-          this.crossStyle.opacity = 1;
+          this.crossStyle.opacity = "1";
         }
       }
     }
@@ -190,7 +190,7 @@ class Item {
       } else {
         item._moveX(0);
         item.slider.classList.remove("drag");
-        item.checkStyle.opacity = 0;
+        item.checkStyle.opacity = "0";
 
         if (doneCallback) doneCallback();
       }
@@ -222,7 +222,7 @@ class Item {
     this.el.classList.add("sorting");
   }
 
-  _onSortMove() {
+  _onSortMove(dy) {
     this._moveY(this.y + dy);
 
     const c = this.collection;
@@ -334,8 +334,8 @@ class Item {
         t._del();
       }, 20);
     } else {
-      this.field.display = "none";
-      this.title.display = "block";
+      this.field.style.display = "none";
+      this.title.style.display = "block";
     }
   }
 }
