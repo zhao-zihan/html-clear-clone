@@ -10,6 +10,7 @@ class App {
     pub.init();
 
     this.data = mock.data;
+    this.listCollection = new ListCollection(this.data);
 
     const state = this.data.state;
     const lists = this.data.items;
@@ -18,14 +19,17 @@ class App {
     switch (state.view) {
       case states.LIST_s_VIEW:
         console.log("init at list collection");
-        this.currentCollection = new ListCollection(this.data);
+        this.currentCollection = this.listCollection;
         break;
 
       case states.TODO_COLLECTION_VIEW:
         console.log("init at todo collection with order: " + state.order);
         while (i--) {
           if (lists[i].order === state.order) {
-            this.currentCollection = new TodoCollection(lists[i]);
+            const listItem = this.listCollection._getItemByOrder(
+              lists[i].order
+            );
+            this.currentCollection = new TodoCollection(lists[i], listItem);
             break;
           }
         }
@@ -33,20 +37,42 @@ class App {
 
       default:
         console.log("default init at list collection");
-        this.currentCollection = new ListCollection(mock.data);
+        this.currentCollection = this.listCollection;
         break;
     }
 
     // console.log(this.currentCollection);
 
-    // this.currentCollection._load(0, true);
+    this.currentCollection._load(0, true);
 
-    if (this.currentCollection.itemTypeText === "Item") {
-      this.listCollection = new ListCollection(this.data);
+    // if (this.currentCollection.itemTypeText === "Item") {
+    //   this.listCollection = new ListCollection(this.data);
+    //   // this.listCollection._load();
+    // } else {
+    //   this.listCollection = this.currentCollection;
+    //   const listItem = this.listCollection._getItemByOrder(
+    //     lists[state.lastTodoCollection || 0].order
+    //   );
+    //   this.lastTodoCollection = new TodoCollection(
+    //     lists[state.lastTodoCollection || 0],
+    //     listItem
+    //   );
+    //   this.currentCollection._load();
+    // }
+
+    if (!this.listCollection.initiated) {
+      this.listCollection._positionForPullDown();
       this.listCollection._load();
     } else {
-      this.listCollection = this.currentCollection;
-      this.currentCollection._load();
+      const listItem = this.listCollection._getItemByOrder(
+        lists[state.lastTodoCollection || 0].order
+      );
+      this.lastTodoCollection = new TodoCollection(
+        lists[state.lastTodoCollection || 0],
+        listItem
+      );
+      this.lastTodoCollection._load(clientHeight + ITEM_HEIGHT, true);
+      this.lastTodoCollection._positionForPullUp();
     }
   }
 
@@ -56,6 +82,12 @@ class App {
     let state = mock.data.state;
     state.view = col.stateType;
     state.order = col.data.order;
+    mock._save();
+  }
+
+  _setLastTodoCollection(col) {
+    this.lastTodoCollection = col;
+    mock.data.state.lastTodoCollection = col.data.order;
     mock._save();
   }
 }
