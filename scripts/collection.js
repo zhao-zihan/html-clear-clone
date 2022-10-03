@@ -102,16 +102,15 @@ class Collection {
     return this.hash[id];
   }
 
-  _getItemsByOrder(order) {
-    const i = this.items.length;
-    let item;
-
-    while (i--) {
-      item = this.items[i];
+  _getItemByOrder(order) {
+    let result;
+    this.items.forEach((item) => {
       if (item.data.order === order) {
-        return item;
+        result = item;
+        return;
       }
-    }
+    });
+    return result;
   }
 
   _getItemsBetween(origin, target) {
@@ -212,12 +211,12 @@ class Collection {
         const pct = this.y / ITEM_HEIGHT;
         const r = Math.max(0, (1 - pct) * 90);
         this.topDummySliderStyle[transformProperty] = `rotateX(${r}deg)`;
-        this.topDummySliderStyle.opacity = pct / 2 + 0.5;
+        this.topDummySliderStyle.opacity = `${pct / 2 + 0.5}`;
       } else {
         if (!this.pastPullDownThreshold) {
           this.pastPullDownThreshold = true;
           this.topDummySliderStyle[transformProperty] = "none";
-          this.topDummySliderStyle.opacity = 1;
+          this.topDummySliderStyle.opacity = "1";
           this.topDummyText.innerText = `Release to Create ${this.itemTypeText}`;
         }
       }
@@ -285,7 +284,7 @@ class Collection {
         const pct = col.y / ITEM_HEIGHT;
         const r = Math.max(0, (1 - pct) * 90);
         col.topDummySliderStyle[transformProperty] = `rotateX(${r}deg)`;
-        col.topDummySliderStyle.opacity = pct / 2 + 0.5;
+        col.topDummySliderStyle.opacity = `${pct / 2 + 0.5}`;
       }
     }
   }
