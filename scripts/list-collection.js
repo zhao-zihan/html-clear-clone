@@ -81,10 +81,11 @@ class ListCollection extends Collection {
     t.el.style.display = "none";
 
     setTimeout(function () {
+      console.log("collection positioned");
       t._updatePosition();
       t._moveY(-t.height - ITEM_HEIGHT);
       t.el.classList.add("drag");
-      t.el.display = "block";
+      t.el.style.display = "block";
     }, 0);
   }
 
@@ -97,8 +98,72 @@ class ListCollection extends Collection {
       if (!this.longPullingUp) {
         this.longPullingUp = true;
         ltc.el.classList.add("drag");
-        ltc.topSwitch.display = "block";
+        ltc.topSwitch.style.display = "block";
+        console.log("long pull up triggered");
+      }
+      ltc._moveY(
+        this.y +
+          Math.max(this.height + ITEM_HEIGHT * 2, clientHeight + ITEM_HEIGHT)
+      );
+
+      if (this.y < this.upperBound - ITEM_HEIGHT) {
+        if (!this.pastLongPullDownThreshold) {
+          this.pastLongPullDownThreshold = true;
+          ltc.topArrow.classList.add("down");
+        }
+      } else {
+        if (this.pastLongPullDownThreshold) {
+          this.pastLongPullDownThreshold = false;
+          ltc.topArrow.classList.remove("down");
+        }
+      }
+    } else {
+      if (this.longPullingUp) {
+        this.longPullingUp = false;
+        ltc.topSwitch.display = "none";
+        ltc._moveY(clientHeight + ITEM_HEIGHT);
       }
     }
+  }
+
+  _onDragEnd() {
+    this._resetDragStates();
+
+    if (this.y >= ITEM_HEIGHT) {
+      this._createItemAtTop();
+      return;
+    } else if (this.y <= this.upperBound - ITEM_HEIGHT) {
+      this._onPullUp();
+      return;
+    } else if (this.y <= this.upperBound) {
+      const ltc = app.lastTodoCollection;
+      ltc.el.classList.remove("drag");
+      ltc.el.classList.remove("ease-out");
+      ltc._moveY(clientHeight + ITEM_HEIGHT);
+      ltc._onTransitionEnd(function () {
+        ltc.el.classList.remove("ease-out");
+      });
+    }
+    super._onDragEnd.apply(this, arguments);
+  }
+
+  _onPullUp() {
+    const ltc = app.lastTodoCollection;
+    ltc.el.classList.remove("drag");
+    ltc._moveY(0);
+
+    this.el.classList.remove("drag");
+    this._moveY(Math.min(-this.height, -clientHeight) - ITEM_HEIGHT * 2);
+
+    app._setCurrentCollection(ltc);
+
+    ltc._onTransitionEnd(function () {
+      ltc._resetTopSwitch();
+    });
+
+    const t = this;
+    t._onTransitionEnd(function () {
+      t._positionForPullDown();
+    });
   }
 }
