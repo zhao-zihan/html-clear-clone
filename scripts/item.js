@@ -11,17 +11,18 @@ class Item {
     this.x = 0;
     this.y = data.order * ITEM_HEIGHT;
     this.data = data;
-    // this._render();
+
     if (listItem) {
       this._updateListCount();
     }
-    console.log("check count: " + this.count);
+
+    // only render after listCollection count has been updated
     this._render();
+
     if (listItem) {
       this._updateCount();
     }
-    // console.log("item el: " + this.el.innerHTML);
-    // console.log("check el: " + elementsToHTML(this.el));
+
     this._selectStyle();
 
     this._addImage();
@@ -31,7 +32,6 @@ class Item {
 
   _selectStyle() {
     this.style = this.el.style;
-    // console.log("this.style: " + JSON.stringify(this.style));
     this.slider = this.el.querySelector(".slider");
     this.sliderStyle = this.slider.style;
   }
@@ -59,6 +59,7 @@ class Item {
     this.title = this.el.querySelector(".title");
     this.field = this.el.querySelector(".field");
     const t = this;
+    // click outside or hit enter will trigger onEditDone
     this.field.addEventListener("blur", this._onEditDone.bind(this));
     this.field.addEventListener("keyup", function (e) {
       if (e.keyCode === 13) {
@@ -99,14 +100,14 @@ class Item {
 
   _updatePosition(top) {
     if (top) {
-      this.el.classList.add(".top");
+      this.el.classList.add("top");
     }
 
     this._moveY(this.data.order * ITEM_HEIGHT);
 
     if (top) {
       this._onTransitionEnd(function (t) {
-        t.el.classList.remove(".top");
+        t.el.classList.remove("top");
       });
     }
   }
@@ -172,8 +173,13 @@ class Item {
     const item = this;
     let doneCallback = null;
 
+    // need to call super._del here, kind of tricky, beyond my current knowledge base
     if (item.x < leftBound) {
-      this._delete(loopWithCallback);
+      if (this.type === "list-item") {
+        this._delete(loopWithCallback);
+      } else {
+        this._del(loopWithCallback);
+      }
       return;
     } else if (item.x > rightBound) {
       doneCallback = function () {
@@ -210,7 +216,6 @@ class Item {
     }px, ${this.y}px, 0)`;
 
     t._onTransitionEnd(function (t) {
-      console.log("on transitionEnd triggered");
       t.deleted = true;
       t.el.remove();
       t.collection._collapseAt(t.data.order, t);
@@ -244,13 +249,15 @@ class Item {
   }
 
   _checkSwap() {
+    // https://stackoverflow.com/questions/5971645/what-is-the-double-tilde-operator-in-javascript
     const currentAt = Math.min(
       this.collection.items.length - 1,
       ~~((this.y + ITEM_HEIGHT / 2) / ITEM_HEIGHT)
     );
+    origin = this.data.order;
 
     if (currentAt != origin) {
-      const targets = this.collection.getItemsBetween(origin, currentAt);
+      const targets = this.collection._getItemsBetween(origin, currentAt);
       const increment = currentAt > origin ? -1 : 1;
 
       targets.forEach((target) => {
@@ -274,7 +281,6 @@ class Item {
   }
 
   _onTransitionEnd(callback, noStrict) {
-    console.log("transitionEnd triggered");
     const t = this;
     t.el.addEventListener(transitionEndEvent, function dummy(e) {
       if (e.target !== this && !noStrict) return;
@@ -291,18 +297,14 @@ class Item {
     this.field.style.display = "block";
     this.field.focus();
     this.el.classList.add("edit");
-    // console.log("onEdit el: " + elementsToHTML(this.el));
-    console.log("data order " + this.data.order);
 
     this.collection._onEditStart(this.data.order, noRemember);
   }
 
   _onEditDone() {
     const val = this.field.value;
-    console.log("val: " + val);
 
     if (!isTouch) {
-      console.log("moved " + beforeEditPosition);
       this.collection._moveY(beforeEditPosition);
     }
     this.collection.el.classList.remove("shade");

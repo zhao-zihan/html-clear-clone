@@ -16,7 +16,6 @@ class Collection {
     this._initDummyItems();
 
     this._resetDragStates();
-    // this._populateItems();
   }
 
   _init(data) {
@@ -25,7 +24,6 @@ class Collection {
     this.initiated = false;
 
     this.data = data || mock.data;
-    // console.log("init in collection " + this.data);
     this.items = [];
   }
 
@@ -41,17 +39,14 @@ class Collection {
 
   _initDummyItems() {
     this.topDummy = this.el.querySelector(".dummy-item.top");
-    // console.log("check top dummy: " + elementsToHTML(this.topDummy));
     this.topDummySlider = this.topDummy.querySelector(".slider");
     this.topDummyText = this.topDummy.querySelector(".title");
     this.topDummySliderStyle = this.topDummySlider.style;
   }
 
   _populateItems() {
-    // console.log("populate in collection " + this.data.items);
     const items = this.data.items;
     let i = items.length;
-    // console.log("there are " + i + " i");
 
     this.count = 0;
     this.hash = {};
@@ -59,7 +54,6 @@ class Collection {
 
     while (i--) {
       this._addItem(items[i]);
-      // console.log("items[i] is " + items[i]);
     }
 
     this.hasDoneItems = this.items.length > this.count;
@@ -68,21 +62,14 @@ class Collection {
 
   _addItem(data) {
     const newItem = this.itemType(data);
-    // console.log("newItem: " + JSON.stringify(newItem));
-    // console.log("type of new item: " + typeof newItem);
-    // console.log("el of new item: " + newItem.el.innerHTML);
 
     newItem.collection = this;
-    // console.log("id of new item: " + this.newIdFrom);
+
     newItem._updatePosition();
 
-    // console.log("current newItem: " + JSON.stringify(newItem.collection));
-    // newItem.el.querySelector(".slider").dataset.id = this.newIdFrom;
     retrieveChild(newItem.el).dataset.id = this.newIdFrom;
-    // console.log("check new method: " + elementsToHTML(newItem.el));
-    // console.log("el of new item: " + newItem.el.innerHTML);
+
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/prepend
-    // console.log("current el: \n" + elementsToHTML(newItem.el));
     this.el.prepend(newItem.el);
 
     this.items.push(newItem);
@@ -130,7 +117,6 @@ class Collection {
   }
 
   _updateColor() {
-    // console.log("color updated");
     this.items.forEach((item) => item._updateColor());
   }
 
@@ -147,7 +133,6 @@ class Collection {
   }
 
   _collapseAt(at, target) {
-    console.log("collapse triggered");
     let delIndex;
 
     this.items.forEach((item, i) => {
@@ -293,6 +278,10 @@ class Collection {
     if (this.hasDoneItems) {
       this._createItemInBetween();
     } else {
+      // hide bottomSwitch if creating items in TodoCollection page
+      if (this.itemTypeText === "Item") {
+        this.bottomSwitch.style.display = "none";
+      }
       this._createItemAtBottom();
     }
   }
@@ -331,7 +320,6 @@ class Collection {
     }
 
     if (noRemember) {
-      console.log("noRemember");
       t.el.classList.remove("drag");
       t.el.classList.add("ease-out");
       t._moveY(0);
@@ -344,7 +332,6 @@ class Collection {
 
   _onEditDone(callback) {
     if (!isTouch) {
-      console.log("moved " + beforeEditPosition);
       this._moveY(beforeEditPosition);
     }
 
@@ -397,7 +384,6 @@ class Collection {
     mock._addItem(newData, this.data);
 
     const newItem = this._addItem(newData);
-    console.log("newItem check " + newItem);
     this._updateColor();
     this._updateBounds();
 
@@ -409,6 +395,7 @@ class Collection {
     fieldEl.focus();
 
     // https://stackoverflow.com/questions/4402287/javascript-remove-event-listener
+    // listen for animationEnd, remove the event listener once code executed
     newItem.el.addEventListener(transitionEndEvent, function callback(e) {
       newItem.el.classList.remove("dummy-item");
       newItem.el.classList.remove("bottom");
@@ -419,9 +406,9 @@ class Collection {
     newItem.el.querySelector(".slider").style[
       transformProperty
     ] = `rotateX(0deg)`;
-    console.log("timeout triggered");
   }
 
+  // work on this one later
   _createItemInBetween() {
     const newData = {
       title: "",

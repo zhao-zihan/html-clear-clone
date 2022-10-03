@@ -75,8 +75,8 @@ class TodoItem extends Item {
   }
 
   _onDragMove(dx) {
-    const w = (Math.min(1, Math.max(0, this.x / ITEM_HEIGHT)) * 100).toFixed(2);
-    this.lineStyle.width = `${this.data.done ? 100 - w : w}`;
+    let w = (Math.min(1, Math.max(0, this.x / ITEM_HEIGHT)) * 100).toFixed(2);
+    this.lineStyle.width = `${this.data.done ? 100 - w : w}%`;
 
     if (this.x >= rightBound) {
       if (!this.activated) {

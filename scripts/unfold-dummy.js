@@ -1,3 +1,5 @@
+"use strict";
+
 class UnfoldDummy extends Item {
   constructor(options) {
     this.el = htmlToElements(`

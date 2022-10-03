@@ -16,19 +16,17 @@ const listItemVars = {
   // spanL: maxColorSpan * stepL,
 };
 
+// won't work the above way, plus you can't use this keyword within an object
 // https://stackoverflow.com/questions/4616202/self-references-in-object-literals-initializers
 listItemVars.spanH = listItemVars.maxColorSpan * listItemVars.stepH;
 listItemVars.spanS = listItemVars.maxColorSpan * listItemVars.stepS;
 listItemVars.spanL = listItemVars.maxColorSpan * listItemVars.stepL;
-
-console.log(`listItemVars spanH: ${listItemVars.spanH}`);
 
 class ListItem extends Item {
   type = "list-item";
 
   constructor(data) {
     super(data, true);
-    // console.log("check count: " + this.count);
 
     if (this.count === 0) {
       this.noDragRight = true;
@@ -55,25 +53,20 @@ class ListItem extends Item {
       </div>
     `);
     this.countEl = this.el.querySelector(".count");
-    // console.log("successfully rendered\n " + elementsToHTML(this.el));
   }
 
   _updateColor() {
-    // console.log("list item color updated");
     const o = this.data.order;
     const n = this.collection.count;
-    console.log("check o: " + o + " check n: " + n);
     let sH = listItemVars.stepH;
     let sS = listItemVars.stepS;
     let sL = listItemVars.stepL;
-    console.log(`${sH}, ${sS}, ${sL}`);
 
+    // if too many, decrease color steps
     if (n > listItemVars.maxColorSpan) {
-      console.log("n > ?: " + n);
       sH = listItemVars.spanH / n;
       sS = listItemVars.spanS / n;
       sL = listItemVars.spanL / n;
-      console.log(`${sH}, ${sS}, ${sL}`);
     }
 
     this.sliderStyle.backgroundColor = `
@@ -81,8 +74,6 @@ class ListItem extends Item {
         ${Math.min(100, listItemVars.baseS + o * sS)}%, 
         ${Math.min(100, listItemVars.baseL + o * sL)}%)
     `;
-
-    console.log("check sliderStyle: " + this.slider.innerHTML);
   }
 
   _onTap(e) {
@@ -97,7 +88,8 @@ class ListItem extends Item {
     if (this.collection.inMomentum) return;
     this.el.classList.add("fade");
 
-    app.currentCollection._open(this.data.order);
+    // a little bit dangerous here, could be invoked before app initialized
+    app.listCollection._open(this.data.order);
 
     if (app.lastTodoCollection) {
       app.lastTodoCollection.el.remove();

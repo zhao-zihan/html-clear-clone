@@ -1,3 +1,5 @@
+"use strict";
+
 class TouchData {
   constructor(e) {
     this.id = e.identifier || "mouse";
@@ -75,9 +77,9 @@ const dragThreshold = 20;
 
 function initEvents() {
   itemContainer.addEventListener(start, function (e) {
-    console.log("start is: " + start);
     if (app && app.isEditing) return;
 
+    // no more than two fingers
     if (touches.length >= 2 || currentAction) return;
 
     pub.isDown = true;
@@ -97,7 +99,6 @@ function initEvents() {
   });
 
   itemContainer.addEventListener(move, function (e) {
-    // console.log("mouse moved");
     if (app && app.isEditing) return;
 
     if (!touches.length) return;
@@ -127,7 +128,6 @@ function initEvents() {
       }
     } else {
       actions[currentAction].move(i);
-      // console.log("current action: " + currentAction);
     }
   });
 
@@ -176,7 +176,6 @@ const actions = {
     },
 
     move() {
-      console.log("collection dragged");
       app.currentCollection._onDragMove(touches[0].dy);
     },
 
@@ -327,6 +326,7 @@ function getParentItem(node) {
   return null;
 }
 
+// expose to outside for init to work
 const pub = {
   init() {
     console.log("Touch: init");

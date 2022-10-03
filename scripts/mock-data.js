@@ -1,3 +1,5 @@
+"use strict";
+
 class Mock {
   constructor(debug) {
     this._init(debug);

@@ -52,7 +52,7 @@ class TodoCollection extends Collection {
 
     if (noAnimation) {
       this._updatePosition();
-      itemContainer.prepend(this.el);
+      itemContainer.appendChild(this.el);
     } else {
       if (t.initiated) {
         t.el.remove();
@@ -61,7 +61,7 @@ class TodoCollection extends Collection {
       t.items.forEach((item) => item._moveY(0));
 
       t.el.classList.remove("drag");
-      itemContainer.prepend(this.el);
+      itemContainer.appendChild(this.el);
 
       setTimeout(function () {
         t._moveY(0);
@@ -97,6 +97,7 @@ class TodoCollection extends Collection {
 
     const lc = app.listCollection;
 
+    // long pull down, go back to list
     if (this.y >= ITEM_HEIGHT * 2) {
       if (!this.longPullingDown) {
         this.longPullingDown = true;
@@ -121,11 +122,12 @@ class TodoCollection extends Collection {
         this.longPullingUp = true;
 
         const pos =
-          Math.max(clientHeight, this.height + ITEM_HEIGHT) + ITEM_HEIGHT * 2;
+          Math.max(clientHeight, this.height + ITEM_HEIGHT) + ITEM_HEIGHT;
         this.bottomSwitch.style[
           transformProperty
         ] = `translate3d(0px, ${pos}px, 0px)`;
         this.bottomSwitch.style.display = "block";
+        this.smallArrowStyle.display = "block";
 
         if (this.hasDoneItems) {
           this.bottomSwitch.classList.remove("empty");
@@ -135,13 +137,10 @@ class TodoCollection extends Collection {
         }
       }
 
-      if (this.hasDoneItems) {
-        const offset =
-          ((this.upperBound - this.y) / (2 * ITEM_HEIGHT)) * (ITEM_HEIGHT + 15);
-        this.smallArrowStyle[
-          transformProperty
-        ] = `translate3d(0px, ${offset}px, 0)`;
-      }
+      let offset = ((this.upperBound - this.y) / (2 * ITEM_HEIGHT)) * 15;
+      this.smallArrowStyle[
+        transformProperty
+      ] = `translate3d(0px, ${offset}px, 0)`;
 
       if (this.y < this.upperBound - ITEM_HEIGHT * 2) {
         if (!this.pastLongPullUpThreshold) {

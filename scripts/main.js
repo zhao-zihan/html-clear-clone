@@ -7,6 +7,7 @@ class App {
   }
 
   _init() {
+    // init event listeners
     pub.init();
 
     this.data = mock.data;
@@ -41,29 +42,15 @@ class App {
         break;
     }
 
-    // console.log(this.currentCollection);
-
+    // assume it was todo collection
     this.currentCollection._load(0, true);
 
-    // if (this.currentCollection.itemTypeText === "Item") {
-    //   this.listCollection = new ListCollection(this.data);
-    //   // this.listCollection._load();
-    // } else {
-    //   this.listCollection = this.currentCollection;
-    //   const listItem = this.listCollection._getItemByOrder(
-    //     lists[state.lastTodoCollection || 0].order
-    //   );
-    //   this.lastTodoCollection = new TodoCollection(
-    //     lists[state.lastTodoCollection || 0],
-    //     listItem
-    //   );
-    //   this.currentCollection._load();
-    // }
-
     if (!this.listCollection.initiated) {
+      // if not todo collection, init list collection
       this.listCollection._positionForPullDown();
       this.listCollection._load();
     } else {
+      // if it was list collection, then prepare the todo collection
       const listItem = this.listCollection._getItemByOrder(
         lists[state.lastTodoCollection || 0].order
       );

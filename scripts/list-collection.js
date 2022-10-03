@@ -33,9 +33,6 @@ class ListCollection extends Collection {
 
   _load() {
     this.initiated = true;
-    // itemContainer.insertAdjacentHTML("afterend", this.el.innerHTML);
-    // console.log("this.el in load: " + elementsToHTML(this.el));
-    // itemContainer.innerHTML = elementsToHTML(this.el);
     itemContainer.appendChild(this.el);
   }
 
@@ -45,20 +42,8 @@ class ListCollection extends Collection {
     let t = this;
     let ty;
 
-    // let i = t.items.length;
-    // let item;
-    // let ty;
-
-    // while (i--) {
-    //   item = t.items[i];
-    //   if (item.data.order <= at) {
-    //     ty = (item.data.order - at) * ITEM_HEIGHT - t.y;
-    //   } else {
-    //     ty = window.innerHeight + (item.data.order - at) * ITEM_HEIGHT - t.y;
-    //   }
-    //   item.moveY(ty);
-    // }
-
+    // tap an item, move all items below this one below the child collection,
+    // and move above items outside upperBound of browser.
     t.items
       .slice()
       .reverse()
@@ -71,6 +56,7 @@ class ListCollection extends Collection {
         item._moveY(ty);
       });
 
+    // after moving all items, move them back together behind the scene for next pull down
     t.items[0]._onTransitionEnd(function () {
       t._positionForPullDown();
     });
@@ -78,10 +64,10 @@ class ListCollection extends Collection {
 
   _positionForPullDown() {
     const t = this;
+    // hide then move
     t.el.style.display = "none";
 
     setTimeout(function () {
-      console.log("collection positioned");
       t._updatePosition();
       t._moveY(-t.height - ITEM_HEIGHT);
       t.el.classList.add("drag");
@@ -94,12 +80,12 @@ class ListCollection extends Collection {
 
     const ltc = app.lastTodoCollection;
 
+    // pulling down
     if (this.y <= this.upperBound) {
       if (!this.longPullingUp) {
         this.longPullingUp = true;
         ltc.el.classList.add("drag");
         ltc.topSwitch.style.display = "block";
-        console.log("long pull up triggered");
       }
       ltc._moveY(
         this.y +
@@ -148,6 +134,7 @@ class ListCollection extends Collection {
   }
 
   _onPullUp() {
+    // move previous todoCollection back to view
     const ltc = app.lastTodoCollection;
     ltc.el.classList.remove("drag");
     ltc._moveY(0);
