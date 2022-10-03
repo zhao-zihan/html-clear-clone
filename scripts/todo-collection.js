@@ -100,7 +100,10 @@ class TodoCollection extends Collection {
     if (this.y >= ITEM_HEIGHT * 2) {
       if (!this.longPullingDown) {
         this.longPullingDown = true;
-        this.topSwitch.style.display = "true";
+        this.topSwitch.style.display = "block";
+        this.topSwitch.style[
+          transformProperty
+        ] = `translate3d(0px, ${-ITEM_HEIGHT}px, 0px)`;
         this.topDummy.style.opacity = "0";
       }
       lc._moveY(this.y - lc.height - ITEM_HEIGHT * 2);
@@ -161,6 +164,7 @@ class TodoCollection extends Collection {
 
   _onDragEnd() {
     this._resetDragStates();
+    this.topSwitch.style.display = "none";
 
     if (this.y >= ITEM_HEIGHT * 2) {
       this._onPullDown();
