@@ -76,7 +76,7 @@ const dragThreshold = 20;
 function initEvents() {
   itemContainer.addEventListener(start, function (e) {
     console.log("start is: " + start);
-    if (app.isEditing) return;
+    if (app && app.isEditing) return;
 
     if (touches.length >= 2 || currentAction) return;
 
@@ -98,7 +98,7 @@ function initEvents() {
 
   itemContainer.addEventListener(move, function (e) {
     // console.log("mouse moved");
-    if (app.isEditing) return;
+    if (app && app.isEditing) return;
 
     if (!touches.length) return;
 
@@ -132,7 +132,7 @@ function initEvents() {
   });
 
   itemContainer.addEventListener(end, function (e) {
-    if (app.isEditing) return;
+    if (app && app.isEditing) return;
 
     e = t ? e.changedTouches[0] : e;
     const id = e.identifier || "mouse";
