@@ -99,12 +99,17 @@ class ListItem extends Item {
 
     app.currentCollection._open(this.data.order);
 
+    if (app.lastTodoCollection) {
+      app.lastTodoCollection.el.remove();
+    }
+
     if (!this.toDoCollection) {
       this.toDoCollection = new TodoCollection(this.data, this);
     }
     this.toDoCollection._load(this.data.order);
 
     app._setCurrentCollection(this.toDoCollection);
+    app._setLastTodoCollection(this.toDoCollection);
   }
 
   _done() {
@@ -137,7 +142,6 @@ class ListItem extends Item {
   }
 
   _updateCount() {
-    console.log("I'm called");
     this.countEl.innerText = this.count;
     if (this.count === 0) {
       this.el.classList.add("empty");
