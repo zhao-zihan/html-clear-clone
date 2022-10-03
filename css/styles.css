@@ -156,8 +156,7 @@ body {
 .item .slider {
   /* https://www.youtube.com/watch?v=P6UgYq3J3Qs&t=307s */
   /* need to set position to relative to make z-index work */
-  -webkit-transition: -webkit-transform 0.15s var(--ease),
-    color 0.15s var(--ease);
+  -webkit-transition: -webkit-transform 0.15s, color 0.15s var(--ease);
   position: relative;
   height: var(--item-height);
   z-index: 1;
