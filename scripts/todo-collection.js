@@ -237,5 +237,6 @@ class TodoCollection extends Collection {
     this.topSwitch.style.display = "none";
     this.topText.innerText = "Switch to Lists";
     this.topArrow.classList.remove("down");
+    this.el.querySelector(".dummy-item").style.display = "block";
   }
 }
