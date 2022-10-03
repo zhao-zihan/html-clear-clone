@@ -16,6 +16,16 @@ body {
   font-weight: bold;
 }
 
+/* TRANSITIONS */
+
+.drag {
+  -webkit-transition: -webkit-transform 0s linear, opacity 0s linear;
+}
+
+.ease-out {
+  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 0.5, 0.5, 1) !important;
+}
+
 .wrapper {
   position: absolute;
   width: 100%;
@@ -29,7 +39,16 @@ body {
   z-index: 1;
 }
 
+.credit {
+  display: none;
+}
+
+/* COLLECTION */
+
 .collection {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.3s var(--ease),
+    opacity 0.3s var(--ease);
   position: absolute;
   width: 100%;
   top: 0;
@@ -37,11 +56,88 @@ body {
   z-index: 0;
 }
 
-.credit {
+.collection.shade .item {
+  opacity: 0.15;
+}
+
+.collection.instant .item {
+  -webkit-transition: -webkit-transform 0s linear;
+}
+
+.collection .top-switch,
+.collection .bottom-switch {
+  display: absolute;
+  /* https://stackoverflow.com/questions/49469344/using-negative-css-custom-properties */
+  top: calc(var(--item-height) * -1);
+  height: var(--item-height);
+  line-height: var(--item-height);
+  width: 100%;
+  text-align: center;
+}
+
+.collection .arrow {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  -webkit-transition: -webkit-transform 0.18s ease-out;
+}
+
+.collection .arrow.down {
+  -webkit-transform: rotate(180deg);
+}
+
+.collection .top-switch {
   display: none;
 }
 
+.collection .bottom-switch {
+  display: none;
+}
+
+.collection .bottom-switch.empty {
+  color: #333;
+}
+
+.collection .bottom-switch.empty .drawer {
+  background-position: 0 0;
+  opacity: 0.2;
+}
+
+.collection .bottom-switch.empty .drawer .arrow-small {
+  display: none;
+}
+
+.collection .drawer {
+  position: relative;
+  top: -2px;
+  margin-right: 8px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  background: url(../images/drawer.png) 0 0 no-repeat;
+  background-size: 100%;
+}
+
+.collection .drawer .arrow-small {
+  position: absolute;
+  width: 15px;
+  left: 8px;
+  top: calc(var(--item-height) - 10px);
+}
+
+.collection .drawer.full {
+  background-position: 0 -30px;
+}
+
+.collection .drawer.full .arrow-small {
+  display: none;
+}
+
+/* ITEM */
+
 .item {
+  -webkit-perspective-origin: center center;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
   height: var(--item-height);
   position: absolute;
@@ -53,15 +149,18 @@ body {
   line-height: var(--item-height);
 }
 
-.slider {
+.item .slider {
   /* https://www.youtube.com/watch?v=P6UgYq3J3Qs&t=307s */
   /* need to set position to relative to make z-index work */
+  -webkit-transition: -webkit-transform 0.15s var(--ease),
+    color 0.15s var(--ease);
   position: relative;
   height: var(--item-height);
   z-index: 1;
 }
 
-.inner {
+.item .inner {
+  -webkit-transform: translate3d(0, 0, 0);
   height: var(--item-height);
   display: flex;
   justify-content: space-between;
@@ -71,30 +170,7 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.item .title {
-  position: absolute;
-  top: 0;
-  left: 12px;
-  cursor: default;
-}
-
-.item.empty .text,
-.item.empty .count {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.count {
-  width: var(--item-height);
-  height: var(--item-height);
-  background-color: rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 0;
-}
-
-.field {
+.item .field {
   cursor: default;
   display: none;
   position: absolute;
@@ -112,8 +188,15 @@ body {
   height: var(--item-height);
 }
 
-.check,
-.cross {
+.item .title {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  cursor: default;
+}
+
+.item .check,
+.item .cross {
   width: var(--item-height);
   height: var(--item-height);
   position: absolute;
@@ -122,25 +205,95 @@ body {
   top: 0;
 }
 
-.check {
+.item .check {
   left: 0;
 }
 
-.cross {
+.item .cross {
   right: 0;
 }
 
-.drag {
-  -webkit-transition: -webkit-transform 0s linear, opacity 0s linear;
+.item.sorting {
+  -webkit-transition: -webkit-transform 0s linear !important;
 }
 
-.shade .item {
-  opacity: 0.15;
+.item.sorting .slider {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+  -webkit-transform: scale(1.05) !important;
 }
 
-.edit {
+.item.sorting-trans {
+  z-index: 999 !important;
+  -webkit-transition: -webkit-transform 0.12s ease-out;
+}
+
+.item.sorting-trans .slider {
+  -webkit-transition: -webkit-transform 0.12s ease-out;
+}
+
+.item.top {
+  z-index: 998 !important;
+}
+
+.item.edit {
   opacity: 1 !important;
 }
+
+.item.fade {
+  opacity: 0;
+}
+
+/* LIST ITEM */
+
+.list-item.empty {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.list-item .count {
+  width: var(--item-height);
+  height: var(--item-height);
+  background-color: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+}
+
+/* TODO ITEM */
+
+.todo-item .title {
+  position: relative;
+}
+
+.todo-item .line {
+  -webkit-transition: -webkit-transform width 0s linear,
+    background-color 0.15s var(--ease);
+  position: absolute;
+  height: 2px;
+  left: 0;
+  bottom: 9px;
+  width: 0%;
+  background-color: #fff;
+}
+
+.todo-item.done {
+  color: #666;
+}
+
+.todo-item.done .slider {
+  background-color: #000 !important;
+}
+
+.todo-item.done .line {
+  background-color: #666;
+}
+
+.todo-item.green .slider {
+  background-color: #0a3 !important;
+}
+
+/* DUMMY ITEM */
 
 .dummy-item {
   z-index: -1;
@@ -152,6 +305,11 @@ body {
   /* position: absolute; */
   -webkit-perspective-origin: bottom center;
   top: -62px;
+}
+
+.dummy-item.top .slider {
+  -webkit-transition: -webkit-transform 0s linear;
+  -webkit-transform-origin: bottom center;
 }
 
 .dummy-item.bottom {
