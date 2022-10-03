@@ -65,4 +65,102 @@ class TodoItem extends Item {
         ${todoItemVars.baseL + o * sL}%)
     `;
   }
+
+  _onTap() {
+    if (!this.data.done) {
+      this._onEditStart();
+    } else {
+      this.collection._onTap();
+    }
+  }
+
+  _onDragMove(dx) {
+    const w = (Math.min(1, Math.max(0, this.x / ITEM_HEIGHT)) * 100).toFixed(2);
+    this.lineStyle.width = `${this.data.done ? 100 - w : w}`;
+
+    if (this.x >= rightBound) {
+      if (!this.activated) {
+        this.activated = true;
+        if (this.data.done) {
+          this._updateColor(
+            Math.min(this.data.order, todoItemVars.maxColorSpan)
+          );
+          this.el.classList.remove("done");
+        } else {
+          this.el.classList.add("green");
+        }
+      }
+    } else {
+      if (this.activated) {
+        this.activated = false;
+        if (this.data.done) {
+          this.el.classList.add("done");
+        } else {
+          this.el.classList.remove("green");
+        }
+      }
+    }
+
+    super._onDragMove.apply(this, arguments);
+  }
+
+  _onDragEnd() {
+    if (this.x < rightBound) {
+      if (this.data.done) {
+        this.lineStyle.width = "100%";
+      } else {
+        this.lineStyle.width = "0%";
+      }
+    }
+
+    super._onDragEnd.apply(this);
+  }
+
+  _onSortEnd() {
+    if (!this.data.done) {
+      if (this.data.order >= this.collection.count) {
+        this._beDone();
+      }
+    } else {
+      if (this.data.order < this.collection.count) {
+        this._unDone();
+      }
+    }
+
+    super._onSortEnd.apply(this);
+  }
+
+  _done() {
+    if (!this.data.done) {
+      this._beDone();
+
+      const at = this.data.order;
+      this.data.order = this.collection.count;
+      this._updatePosition(true);
+
+      this.collection._collapseAt(at, this);
+    } else {
+      this._unDone();
+      this.collection._floatUp(this);
+    }
+
+    mock._save();
+  }
+
+  _beDone() {
+    this.data.done = true;
+    this.lineStyle.width = "100%";
+    this.el.classList.remove("green");
+    this.el.classList.add("done");
+    this.collection.count--;
+    this.collection._updateCount();
+  }
+
+  _unDone() {
+    this.data.done = false;
+    this.lineStyle.width = "0%";
+    this.el.classList.remove("done");
+    this.collection.count++;
+    this.collection._updateCount();
+  }
 }
