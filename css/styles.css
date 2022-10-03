@@ -75,6 +75,11 @@ body {
   text-align: center;
 }
 
+.top-switch .text,
+.bottom-switch .text {
+  color: #fff;
+}
+
 .collection .arrow {
   width: 30px;
   height: 30px;
@@ -123,7 +128,7 @@ body {
   position: absolute;
   width: 15px;
   left: 8px;
-  top: calc(var(--item-height) - 10px);
+  top: calc(var(--item-height) * -0.5);
 }
 
 .collection .drawer.full {
@@ -166,8 +171,6 @@ body {
   justify-content: space-between;
   align-items: center;
   color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .item .field {
@@ -245,7 +248,8 @@ body {
 
 /* LIST ITEM */
 
-.list-item.empty {
+.item.empty .text,
+.item.empty .count {
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -277,8 +281,8 @@ body {
   background-color: #fff;
 }
 
-.todo-item.done {
-  color: #666;
+.todo-item.done .title {
+  color: #666 !important;
 }
 
 .todo-item.done .slider {
