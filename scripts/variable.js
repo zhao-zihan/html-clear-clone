@@ -13,7 +13,7 @@ const itemContainer = document.querySelector(".wrapper");
 const s = document.body.style;
 
 const isTouch = "ontouchstart" in window;
-const clientHeight = isTouch ? window.innerHeight : 548;
+const clientHeight = window.innerHeight;
 
 const transformProperty =
   "webkitTransform" in s
