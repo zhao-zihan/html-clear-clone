@@ -1,6 +1,6 @@
 "use strict";
 
-class UnfoldDummy extends Item {
+class UnfoldDummy {
   constructor(options) {
     this.el = htmlToElements(`
     <div class="item unfold-dummy">
@@ -23,6 +23,11 @@ class UnfoldDummy extends Item {
     }
 
     this.content.style.backgroundColor = options.color;
-    this._moveY((options.order - 1) * ITEM_HEIGHT - 1);
+    this._moveY((options.order - 1) * ITEM_HEIGHT);
+  }
+
+  _moveY(y) {
+    this.y = y;
+    this.style[transformProperty] = `translate3d(0px, ${y}px, 0px)`;
   }
 }
