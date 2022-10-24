@@ -180,6 +180,7 @@ class Item {
       } else {
         this._del(loopWithCallback);
       }
+      this.collection._updateCount();
       return;
     } else if (item.x > rightBound) {
       doneCallback = function () {
@@ -220,6 +221,7 @@ class Item {
       t.el.remove();
       t.collection._collapseAt(t.data.order, t);
     });
+    console.log("count: " + this.collection.count);
   }
 
   _onSortStart() {
