@@ -106,7 +106,7 @@ class ListCollection extends Collection {
     } else {
       if (this.longPullingUp) {
         this.longPullingUp = false;
-        ltc.topSwitch.display = "none";
+        ltc.topSwitch.style.display = "none";
         ltc._moveY(clientHeight + ITEM_HEIGHT);
       }
     }
