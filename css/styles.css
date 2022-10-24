@@ -325,3 +325,52 @@ body {
   -webkit-transform-origin: top center;
   -webkit-transform: rotateX(-91deg);
 }
+
+.unfold-dummy {
+  -webkit-perspective: 400px;
+}
+
+.unfold-dummy .inner {
+  transform-style: preserve-3d;
+  transition: transform 0.3s var(--ease);
+  transform: translate3d(0, -62px / 2, -62px / 2);
+  height: 100%;
+}
+
+.unfold-dummy .unfold {
+  width: 100%;
+  height: 50%;
+  position: absolute;
+  left: 0;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+
+.unfold-dummy .unfold.top {
+  opacity: 0.5;
+  transform-origin: bottom center;
+  transform: rotateX(-91deg);
+  bottom: 50%;
+}
+
+.unfold-dummy .unfold.bot {
+  opacity: 0.5;
+  transform-origin: top center;
+  transform: rotateX(91deg);
+  top: 50%;
+}
+
+.unfold-dummy .unfold.bot .item {
+  position: relative;
+  top: -100%;
+}
+
+.unfold-dummy.open .unfold.top,
+.unfold-dummy.open .unfold.bot {
+  transform: none;
+  opacity: 1;
+}
+
+.unfold-dummy.open .inner {
+  transform: none;
+}
