@@ -208,7 +208,7 @@ class Collection {
     } else {
       if (this.pullingDown) {
         this.pullingDown = false;
-        this.topDummy.display = "none";
+        this.topDummy.style.display = "none";
       }
     }
   }
@@ -258,8 +258,8 @@ class Collection {
     function endLoop() {
       col.el.classList.remove("drag");
       col.inMomentum = false;
-      col.topDummy.display = "none";
-      if (col.bottomSwitch) col.bottomSwitch.display = "none";
+      col.topDummy.style.display = "none";
+      if (col.bottomSwitch) col.bottomSwitch.style.display = "none";
     }
 
     function render() {
@@ -344,7 +344,7 @@ class Collection {
   }
 
   _createItemAtTop() {
-    this.topDummy.display = "none";
+    this.topDummy.style.display = "none";
     this.topDummyText.innerText = `Pull to Create ${this.itemTypeText}`;
 
     this._moveY(this.y - ITEM_HEIGHT);
@@ -421,9 +421,9 @@ class Collection {
     this._updateColor();
     this._updateBounds();
 
-    const lastUndone = this._getItemsByOrder(this.count - 1);
+    const lastUndone = this._getItemByOrder(this.count - 1);
     const color = lastUndone.el.querySelector(".slider").style.backgroundColor;
-    const dummy = new UnfoldDummy({
+    let dummy = new UnfoldDummy({
       order: this.count,
       color: color,
     });
@@ -431,8 +431,8 @@ class Collection {
 
     newItem.el.classList.add("drag");
     newItem.el.style.opacity = "0.1";
-    newItem.querySelector(".field").display = "block";
-    newItem.querySelector(".field").focus();
+    newItem.el.querySelector(".field").style.display = "block";
+    newItem.el.querySelector(".field").focus();
 
     const col = this;
     setTimeout(function () {
@@ -444,9 +444,9 @@ class Collection {
       });
 
       dummy.el.classList.add("open");
-      dummy.el.addEventListener(transitionEndEvent, function () {
-        dummy.el.removeEventListener(transitionEndEvent);
-        newItem.el.style.opacity = "";
+      dummy.el.addEventListener(transitionEndEvent, function callback() {
+        dummy.el.removeEventListener(transitionEndEvent, callback);
+        newItem.el.style.opacity = "1";
         setTimeout(function () {
           newItem.el.classList.remove("drag");
           newItem._onEditStart();
